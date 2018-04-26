@@ -7,52 +7,82 @@
  */
 namespace Spider\Business;
 
-use Spider\Business\Queue;
 use Spider\Model\Source;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Client;
 
 class GetContent
 {
+    public $targetUrl;
+
+    public $html;
+
+    public $field;
+
+
+    public function __construct($targetUrl)
+    {
+        $this->targetUrl = $targetUrl;
+        if(count(GetConf("filed"))>0){
+            $this->field = GetConf("filed");
+        }else{
+            throw new \Exception("未设置数据库字段");
+        }
+    }
+
     public function exec()
     {
+        $this->getHtml();
+        $data = $this->getContent();
+        $this->save($data);
 
-        $httpClient = new Client();
+    }
 
+    public function getContent()
+    {
+        $crawler = new Crawler();
 
-        while(1){
-            $crawler = new Crawler();
+        $crawler->addHtmlContent($this->html);
 
-            $link = Queue::pop();
+        $data = [];
 
-            if(!$link){
-                sleep(1);
-            }else{
-                $result = $httpClient->get($link);
+        foreach ($this->field as $index => $item){
 
-                if($result->getStatusCode()==200){
-                    $html = $result->getBody()->getContents();
-                }
-
-                $crawler->addHtmlContent($html);
-
-                $text1 = $crawler->filterXPath("//h2[contains(@id,'activity-name')]")->text();
-                $text2 = $crawler->filterXPath("//div[contains(@id,'js_content')]")->text();
-
-                //存数据库
-
-                $data = [
-                    'name'=>trim($text1),
-                    'content'=>trim($text2),
-                    'link'=>$link,
-                ];
-
-                Source::create($data);
-            }
-
+            $data[$index] = $crawler->filterXPath($item);
 
         }
 
+        return $data;
 
+    }
+
+
+    public function getHtml()
+    {
+        try{
+            $httpClient = new Client();
+
+            $result = $httpClient->get($this->targetUrl);
+
+            if($result->getStatusCode()==200){
+
+                $this->html = $result->getBody()->getContents();
+
+                return $this->html;
+
+            }
+        }catch (\Exception $e){
+            $log = new Logger('getHtml');
+            $log->pushHandler(new StreamHandler(APPPATH.'log/getHtml.log', Logger::WARNING));
+            $log->error($e->getMessage());
+        }
+
+
+
+    }
+
+    public function save($data)
+    {
+        return Source::create($data);
     }
 }
