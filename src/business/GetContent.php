@@ -23,8 +23,8 @@ class GetContent
     public function __construct($targetUrl)
     {
         $this->targetUrl = $targetUrl;
-        if(count(GetConf("filed"))>0){
-            $this->field = GetConf("filed");
+        if(count(GetConf("field"))>0){
+            $this->field = GetConf("field");
         }else{
             throw new \Exception("未设置数据库字段");
         }
@@ -47,9 +47,7 @@ class GetContent
         $data = [];
 
         foreach ($this->field as $index => $item){
-
-            $data[$index] = $crawler->filterXPath($item);
-
+            $data[$index] = $crawler->filterXPath($item)->text();
         }
 
         return $data;
@@ -83,6 +81,7 @@ class GetContent
 
     public function save($data)
     {
+        $data = array_merge($data,['link'=>$this->targetUrl]);
         return Source::create($data);
     }
 }

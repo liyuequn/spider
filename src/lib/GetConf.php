@@ -6,9 +6,10 @@
  * Time: 下午2:13
  */
 
-function GetConf($filed){
+function GetConf($field){
 
     $config = require APPPATH."src/config.php";
-    return $config[$filed];
+
+    return $config[$field];
 
 }

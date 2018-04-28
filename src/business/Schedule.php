@@ -50,8 +50,6 @@ class Schedule
             }else{
                 sleep(1);
             }
-            Queue::checkQueue();
-
         }
     }
 

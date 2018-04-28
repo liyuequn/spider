@@ -18,9 +18,8 @@ return [
     'field'=>[
         'name'=>"//h2[contains(@id,'activity-name')]",
 
-        'link'=>"",
-
         'content'=>"//div[contains(@id,'js_content')]",
+
     ],
 
 ];
