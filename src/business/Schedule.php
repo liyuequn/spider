@@ -36,6 +36,7 @@ class Schedule
             $getUrl = $getUrl->exec();
             $this->saveUrl($getUrl);
             Queue::checkQueue();
+
         }
 
     }

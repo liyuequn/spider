@@ -29,6 +29,7 @@ class ComposerStaticInitc47887765a478208fc28f7d4c9a1fb28
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'Predis\\' => 7,
         ),
         'M' => 
         array (
@@ -89,6 +90,10 @@ class ComposerStaticInitc47887765a478208fc28f7d4c9a1fb28
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Predis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
         'Monolog\\' => 
         array (

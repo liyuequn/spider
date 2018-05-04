@@ -1,8 +1,14 @@
 <?php
-$redis = new \Redis();
-$redis->connect('127.0.0.1', 6379);
+define('APPPATH',dirname(__FILE__).'/');
+require APPPATH.'vendor/autoload.php';
 
-$contentList = $redis->lRange('contentList',0,-1);
-$pageList = $redis->lRange('pageList',0,-1);
+$redis = new \Predis\Client([
+    'host'      =>  '127.0.0.1' ,
+    'port'      =>  6379 ,
+]);
 
-var_dump($contentList);
+$contentList = $redis->llen('contentList');
+$pageList = $redis->llen('pageList');
+
+//$set = $redis->del('pageUrl');
+var_dump($pageList);exit;

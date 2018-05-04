@@ -8,9 +8,6 @@
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-// Autoload 自动载入
-
-require APPPATH.'vendor/autoload.php';
 
 // 载入数据库配置文件
 

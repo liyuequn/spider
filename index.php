@@ -1,5 +1,8 @@
 <?php
 define('APPPATH',dirname(__FILE__).'/');
+// Autoload 自动载入
+
+require APPPATH.'vendor/autoload.php';
 
 require APPPATH."config/eloquent.php";
 
