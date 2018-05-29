@@ -6,6 +6,8 @@ require APPPATH.'vendor/autoload.php';
 
 require APPPATH."config/eloquent.php";
 
+require APPPATH."config/etc.php";
+
 require APPPATH . "src/lib/GetConf.php";
 
 if($argv){

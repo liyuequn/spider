@@ -39,10 +39,12 @@ class Queue
             foreach ($urls as $url){
                 $queue = new self();
                 //如果集合已经存在，就没必要继续加进队列
-                if($queue->redis->sismember($list.'set',$url)==0){
+                if($queue->redis->sismember($list.'Set',$url)==0){
                     $queue->redis->lpush($list,$url);
-                    //把列表页的url放进集合一份
-                    $queue->redis->sadd($list.'set',$url);
+                    $queue->redis->sadd($list.'Set',$url);
+                    echo "save".$list."\n";
+                }else{
+                    echo "alreadyExist".$url."\n";
                 }
 
             }
@@ -54,7 +56,8 @@ class Queue
     public static function pop ($list)
     {
         $queue = new self();
-        return $queue->redis->rpop($list);
+        $res =  $queue->redis->rpop($list);
+        return $res;
     }
 
     public static function checkQueue(){

@@ -33,8 +33,9 @@ class Schedule
                 $targetUrl = $this->setTarget();
             }
             $getUrl = new GetUrl($targetUrl);
-            $getUrl = $getUrl->exec();
-            $this->saveUrl($getUrl);
+            $urls = $getUrl->exec();
+            print_r($urls);
+            $this->saveUrl($urls);
             Queue::checkQueue();
 
         }
@@ -58,17 +59,21 @@ class Schedule
     {
         $pageUrl = Queue::pop('pageList');
         if(!$pageUrl){
+            echo "sleep"."\n";
             sleep(1);
         }else{
+            if(!strpos($pageUrl,'http')){
+                $pageUrl = GetConf('base_uri').$pageUrl;
+            }
             $this->targetUrl = $pageUrl;
         }
 
     }
 
-    public function saveUrl(GetUrl $getUrl)
+    public function saveUrl($urls)
     {
-        Queue::push('pageList',$getUrl->pageUrl);
-        Queue::push('contentList',$getUrl->contentUrl);
+        Queue::push('pageList',$urls['pageUrl']);
+        Queue::push('contentList',$urls['contentUrl']);
 
     }
 }

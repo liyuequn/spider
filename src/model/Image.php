@@ -9,8 +9,8 @@ namespace Spider\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Source extends Model
+class Image extends Model
 {
-    protected $table = 'source';
-    protected $fillable = ['name','url','content'];
+    protected $table = 'image';
+    protected $fillable = ['url'];
 }

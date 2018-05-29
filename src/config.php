@@ -6,20 +6,22 @@
  * Time: 上午10:41
  */
 return [
+    'base_uri'=>'http://www.fsqxt.com',
 
-    'startUrl'=>'https://mp.weixin.qq.com/s/EjVfk1iOuQUjLfPxt_DJ7Q',//初始链接
+    'startUrl'=>'http://www.fsqxt.com/html/part/index25.html',//初始链接
 
-    'pageUrl'=>'//section/p/a',//分页链接
+    'pageUrl'=>'//div[contains(@class,"pagination")]/a',//分页链接
 
-    'contentUrl'=>'//section/p/a',//内容页链接
+    'contentUrl'=>'//div[contains(@class,"channel")]/ul/li/a',//内容页链接
 
     'table'=>'',//数据表名称
     //数据库字段
     'field'=>[
-        'name'=>"//h2[contains(@id,'activity-name')]",
+        'name'=>'//div[contains(@class,"page_title")]',
 
-        'content'=>"//div[contains(@id,'js_content')]",
+        'content'=>'//div[contains(@class,"content")]',
 
     ],
 
 ];
+

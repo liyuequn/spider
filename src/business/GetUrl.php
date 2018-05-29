@@ -25,28 +25,37 @@ class GetUrl
 
     public function __construct($targetUrl)
     {
+
         $this->targetUrl = $targetUrl;
     }
 
     public function exec()
     {
-        $this->getHtml();
+        $html = $this->getHtml();
 
-        $this->getPageUrl();
+        $pageUrl = $this->getPageUrl($html);
 
-        $this->getContentUrl();
+        $contentUrl = $this->getContentUrl();
 
-        return $this;
+        return [
+            'pageUrl'=>$pageUrl,
+            'contentUrl'=>$contentUrl
+        ];
     }
 
 
-    public function getPageUrl()
+    public function getPageUrl($html)
     {
         $crawler = new Crawler();
 
-        $crawler->addHtmlContent($this->html);
+        $crawler->addHtmlContent($html);
 
         $this->pageUrl = $crawler->filterXPath(GetConf('pageUrl'))->extract(array('href'));
+
+        if(count($this->pageUrl)==0)
+        {
+            echo "failed to get url";
+        }
 
         return $this->pageUrl;
 
@@ -69,20 +78,16 @@ class GetUrl
     {
         try{
             $httpClient = new Client();
-
+            echo "target is ".$this->targetUrl."\n";
             $result = $httpClient->get($this->targetUrl);
-
             if($result->getStatusCode()==200){
-
                 $this->html = $result->getBody()->getContents();
-
                 return $this->html;
 
             }
         }catch (\Exception $e){
-            $log = new Logger('getHtml');
-            $log->pushHandler(new StreamHandler(APPPATH.'log/getHtml.log', Logger::WARNING));
-//            $log->warning('Foo');
+            $log = new Logger('getUrlHtml');
+            $log->pushHandler(new StreamHandler(APPPATH.'log/getUrlHtml.log', Logger::WARNING));
             $log->error($e->getMessage());
         }
 

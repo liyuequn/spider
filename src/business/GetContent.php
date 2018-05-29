@@ -7,6 +7,8 @@
  */
 namespace Spider\Business;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Spider\Model\Source;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Client;
@@ -22,7 +24,7 @@ class GetContent
 
     public function __construct($targetUrl)
     {
-        $this->targetUrl = $targetUrl;
+        $this->targetUrl = GetConf('base_uri').$targetUrl;
         if(count(GetConf("field"))>0){
             $this->field = GetConf("field");
         }else{
@@ -45,12 +47,17 @@ class GetContent
         $crawler->addHtmlContent($this->html);
 
         $data = [];
-
-        foreach ($this->field as $index => $item){
-            $data[$index] = $crawler->filterXPath($item)->text();
+        try{
+            foreach ($this->field as $index => $item){
+                $data[$index] = trim($crawler->filterXPath($item)->text());
+            }
+            return $data;
+        }catch (\Exception $e){
+            $log = new Logger('getContent');
+            $log->pushHandler(new StreamHandler(APPPATH.'log/getContent.log', Logger::WARNING));
+            $log->error($e->getMessage().$item);
         }
 
-        return $data;
 
     }
 
@@ -61,18 +68,17 @@ class GetContent
             $httpClient = new Client();
 
             $result = $httpClient->get($this->targetUrl);
-
             if($result->getStatusCode()==200){
 
                 $this->html = $result->getBody()->getContents();
-
+                $this->html = iconv('GBK','UTF-8',$this->html);
                 return $this->html;
 
             }
         }catch (\Exception $e){
-            $log = new Logger('getHtml');
+            $log = new Logger('getContentHtml');
             $log->pushHandler(new StreamHandler(APPPATH.'log/getHtml.log', Logger::WARNING));
-            $log->error($e->getMessage());
+            $log->error($e->getMessage().$this->html);
         }
 
 
@@ -81,7 +87,16 @@ class GetContent
 
     public function save($data)
     {
-        $data = array_merge($data,['link'=>$this->targetUrl]);
-        return Source::create($data);
+        try{
+            if(!is_array($data)) return false;
+            $data = array_merge($data,['url'=>$this->targetUrl]);
+            return Source::create($data);
+        }catch (\Exception $e){
+            $log = new Logger('save');
+            $log->pushHandler(new StreamHandler(APPPATH.'log/save.log', Logger::WARNING));
+            $log->error($e->getMessage());
+        }
+
+
     }
 }

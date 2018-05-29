@@ -9,13 +9,13 @@ $db['eloquent'] = [
 
     'driver'    => 'mysql',
 
-    'host'      => '10.10.10.10',
+    'host'      => '127.0.0.1',
 
     'database'  => 'spider',
 
     'username'  => 'root',
 
-    'password'  => '123456',
+    'password'  => '0124php',
 
     'charset'   => 'utf8',
 
