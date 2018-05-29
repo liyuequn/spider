@@ -6,9 +6,9 @@
  * Time: 上午10:41
  */
 return [
-    'base_uri'=>'http://www.fsqxt.com',
+    'base_uri'=>'',
 
-    'startUrl'=>'http://www.fsqxt.com/html/part/index25.html',//初始链接
+    'startUrl'=>'',//初始链接
 
     'pageUrl'=>'//div[contains(@class,"pagination")]/a',//分页链接
 
